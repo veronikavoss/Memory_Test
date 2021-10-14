@@ -7,18 +7,30 @@ class Controller:
     def __init__(self):
         self.number_sprite=pygame.sprite.Group()
         self.level=1
+        self.opportunity=2
         self.game_start=False
         self.hidden=False
         self.next_level=False
-        self.reset_timer=pygame.time.get_ticks()
+        self.wrong=False
+        self.game_over=False
         self.number_create()
+        
         self.countdown_time=0
         self.hidden_countdown=0
         self.hidden_time=0
+        self.wrong_delay=0
+        self.game_over_time=0
         self.countdown_timer=pygame.USEREVENT+1
         pygame.time.set_timer(self.countdown_timer,1000)
         self.hidden_timer=pygame.USEREVENT+2
         pygame.time.set_timer(self.hidden_timer,1000)
+        self.wrong_delay_timer=pygame.USEREVENT+3
+        pygame.time.set_timer(self.wrong_delay_timer,1000)
+        self.game_over_timer=pygame.USEREVENT+4
+        pygame.time.set_timer(self.game_over_timer,1000)
+        
+        self.correct_sound=pygame.mixer.Sound('Sound/Magic Spell.wav')
+        self.wrong_sound=pygame.mixer.Sound('Sound/B Elec Bass.wav')
     
     def number_create(self):
         self.row,self.column=5,9
@@ -44,27 +56,28 @@ class Controller:
                 self.number_sprite.add(num_pos)
                 
                 num+=1
-                
-        print(grid)
     
     def collision(self,display):
+        # if self.game_over==False:
         self.mouse_pos=pygame.mouse.get_pos()
         self.mouse=pygame.mouse.get_pressed()
         
         for b in self.number_sprite:
             b.text(display)
+            if self.mouse[0]:
+                self.hidden=True
+                self.hidden_time=self.hidden_countdown
             if self.hidden:
                 b.hidden_button()
                 if b.rect.collidepoint(self.mouse_pos) and self.mouse[0]:
                     if b.index==self.num_count+1-len(self.number_sprite):
-                        print('c',self.mouse_pos)
                         self.number_sprite.remove(b)
-                    else:
-                        print('wrong')
+                    elif self.wrong==False:
+                        self.opportunity-=1
+                        self.wrong_sound.play()
+                        self.wrong=True
     
     def update(self,display):
-        self.current_time=pygame.time.get_ticks()
-        
         hidden_countdown=5-(self.level//3)
         self.hidden_countdown=max(hidden_countdown,2)
         
@@ -74,6 +87,7 @@ class Controller:
         if len(self.number_sprite)==0:
             self.hidden=False
             self.game_start=False
+            self.correct_sound.play()
             self.level+=1
             self.number_create()
     

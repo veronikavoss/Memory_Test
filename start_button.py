@@ -9,7 +9,7 @@ class Start_Button(pygame.sprite.Sprite):
         self.image=pygame.Surface((120,120))
         self.rect=self.image.get_rect(center=(120,screen_height-120))
         self.font1=pygame.font.SysFont('Arcade Normal',20)
-        self.font2=pygame.font.SysFont('Arcade Normal',50)
+        self.font2=pygame.font.SysFont('Arcade Normal',80)
         
     def update(self):
         self.start_text=self.font1.render('START', True,'white')
