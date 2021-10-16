@@ -1,5 +1,5 @@
 #%%
-import pygame
+import pygame,os
 from number_button import *
 from random import *
 #%%
@@ -29,8 +29,9 @@ class Controller:
         self.game_over_timer=pygame.USEREVENT+4
         pygame.time.set_timer(self.game_over_timer,1000)
         
-        self.correct_sound=pygame.mixer.Sound('Sound/Magic Spell.wav')
-        self.wrong_sound=pygame.mixer.Sound('Sound/B Elec Bass.wav')
+        source_dir=os.path.dirname(os.path.abspath(__file__))
+        self.correct_sound=pygame.mixer.Sound(os.path.join(source_dir,'Sound/Magic Spell.wav'))
+        self.wrong_sound=pygame.mixer.Sound(os.path.join(source_dir,'Sound/B Elec Bass.wav'))
     
     def number_create(self):
         self.row,self.column=5,9
